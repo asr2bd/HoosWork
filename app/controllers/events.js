@@ -18,7 +18,7 @@ exports.article = function(req, res, next, id){
 
   Event.load(id, function (err, article) {
     if (err) return next(err)
-    if (!article) return next(new Error('Failed to load article ' + id))
+    if (!article) return next(new Error('Failed to load event ' + id))
     req.article = article
     next()
   })
