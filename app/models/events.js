@@ -10,27 +10,13 @@ var mongoose = require('mongoose')
   , imagerConfig = require(config.root + '/config/imager.js')
   , Schema = mongoose.Schema
 
-/**
- * Getters
- */
 
-var getTags = function (tags) {
-  return tags.join(',')
-}
 
 /**
- * Setters
+ * Event Schema
  */
 
-var setTags = function (tags) {
-  return tags.split(',')
-}
-
-/**
- * Article Schema
- */
-
-var ArticleSchema = new Schema({
+var EventSchema = new Schema({
   title: {type : String, default : '', trim : true},
   body: {type : String, default : '', trim : true},
   user: {type : Schema.ObjectId, ref : 'User'},
@@ -39,11 +25,6 @@ var ArticleSchema = new Schema({
     user: { type : Schema.ObjectId, ref : 'User' },
     createdAt: { type : Date, default : Date.now }
   }],
-  tags: {type: [], get: getTags, set: setTags},
-  image: {
-    cdnUri: String,
-    files: []
-  },
   createdAt  : {type : Date, default : Date.now}
 })
 
@@ -51,58 +32,19 @@ var ArticleSchema = new Schema({
  * Validations
  */
 
-ArticleSchema.path('title').validate(function (title) {
+EventSchema.path('title').validate(function (title) {
   return title.length > 0
-}, 'Article title cannot be blank')
+}, 'Event title cannot be blank')
 
-ArticleSchema.path('body').validate(function (body) {
+EventSchema.path('body').validate(function (body) {
   return body.length > 0
-}, 'Article body cannot be blank')
-
-/**
- * Pre-remove hook
- */
-
-ArticleSchema.pre('remove', function (next) {
-  var imager = new Imager(imagerConfig, 'S3')
-  var files = this.image.files
-
-  // if there are files associated with the item, remove from the cloud too
-  imager.remove(files, function (err) {
-    if (err) return next(err)
-  }, 'article')
-
-  next()
-})
+}, 'Event body cannot be blank')
 
 /**
  * Methods
  */
 
-ArticleSchema.methods = {
-
-  /**
-   * Save article and upload image
-   *
-   * @param {Object} images
-   * @param {Function} cb
-   * @api private
-   */
-
-  uploadAndSave: function (images, cb) {
-    if (!images || !images.length) return this.save(cb)
-
-    var imager = new Imager(imagerConfig, 'S3')
-    var self = this
-
-    imager.upload(images, function (err, cdnUri, files) {
-      if (err) return cb(err)
-      if (files.length) {
-        self.image = { cdnUri : cdnUri, files : files }
-      }
-      self.save(cb)
-    }, 'article')
-  },
+EventSchema.methods = {
 
   /**
    * Add comment
@@ -136,10 +78,10 @@ ArticleSchema.methods = {
  * Statics
  */
 
-ArticleSchema.statics = {
+EventSchema.statics = {
 
   /**
-   * Find article by id
+   * Find event by id
    *
    * @param {ObjectId} id
    * @param {Function} cb
@@ -154,7 +96,7 @@ ArticleSchema.statics = {
   },
 
   /**
-   * List articles
+   * List events
    *
    * @param {Object} options
    * @param {Function} cb
@@ -174,4 +116,4 @@ ArticleSchema.statics = {
 
 }
 
-mongoose.model('Article', ArticleSchema)
+mongoose.model('Event', EventSchema)
