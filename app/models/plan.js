@@ -13,10 +13,10 @@ var mongoose = require('mongoose')
 
 
 /**
- * Event Schema
+ * Plan Schema
  */
 
-var EventSchema = new Schema({
+var PlanSchema = new Schema({
   title: {type : String, default : '', trim : true},
   body: {type : String, default : '', trim : true},
   user: {type : Schema.ObjectId, ref : 'User'},
@@ -34,19 +34,19 @@ var EventSchema = new Schema({
  * Validations
  */
 
-EventSchema.path('title').validate(function (title) {
+PlanSchema.path('title').validate(function (title) {
   return title.length > 0
-}, 'Event title cannot be blank')
+}, 'Plan title cannot be blank')
 
-EventSchema.path('body').validate(function (body) {
+PlanSchema.path('body').validate(function (body) {
   return body.length > 0
-}, 'Event body cannot be blank')
+}, 'Plan body cannot be blank')
 
 /**
  * Methods
  */
 
-EventSchema.methods = {
+PlanSchema.methods = {
 
   /**
    * Add comment
@@ -80,10 +80,10 @@ EventSchema.methods = {
  * Statics
  */
 
-EventSchema.statics = {
+PlanSchema.statics = {
 
   /**
-   * Find event by id
+   * Find plan by id
    *
    * @param {ObjectId} id
    * @param {Function} cb
@@ -98,7 +98,7 @@ EventSchema.statics = {
   },
 
   /**
-   * List events
+   * List plans
    *
    * @param {Object} options
    * @param {Function} cb
@@ -118,4 +118,4 @@ EventSchema.statics = {
 
 }
 
-mongoose.model('Event', EventSchema)
+mongoose.model('Plan', PlanSchema)
