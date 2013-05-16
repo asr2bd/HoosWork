@@ -6,7 +6,7 @@
 var mongoose = require('mongoose')
   , Imager = require('imager')
   , async = require('async')
-  , Article = mongoose.model('Article')
+  , Event = mongoose.model('Event')
   , _ = require('underscore')
 
 /**
@@ -16,7 +16,7 @@ var mongoose = require('mongoose')
 exports.article = function(req, res, next, id){
   var User = mongoose.model('User')
 
-  Article.load(id, function (err, article) {
+  Event.load(id, function (err, article) {
     if (err) return next(err)
     if (!article) return next(new Error('Failed to load article ' + id))
     req.article = article
