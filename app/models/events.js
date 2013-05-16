@@ -59,17 +59,17 @@ EventSchema.methods = {
 
   addComment: function (user, comment, cb) {
     
-    var notify = require('../mailer/notify')
+    //var notify = require('../mailer/notify')
     this.comments.push({
       body: comment.body,
       user: user._id
     })
 
-    notify.comment({
+    /*notify.comment({
       article: this,
       currentUser: user,
       comment: comment.body
-    })
+    })*/
 
     this.save(cb)
   }
